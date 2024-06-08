@@ -1,0 +1,20 @@
+<template>
+  <v-app-bar>
+    <v-toolbar-title>Unfollowers</v-toolbar-title>
+
+    <v-toolbar-items>
+      <v-btn
+        exact
+        to="/"
+      >
+        Home
+      </v-btn>
+      <v-btn
+        exact
+        to="/preview"
+      >
+        Preview
+      </v-btn>
+    </v-toolbar-items>
+  </v-app-bar>
+</template>
