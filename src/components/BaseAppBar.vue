@@ -40,7 +40,7 @@ import logoImage from '@/assets/images/throw-trash.png';
     ></v-btn>
 
     <template v-if="$vuetify.display.smAndDown" #extension>
-      <v-list width="100%" color="primary">
+      <v-list width="100%" color="orange-accent-4" theme="dark">
         <v-list-item to="/">
           <v-list-item-media>
             <v-icon start>mdi-home</v-icon>
