@@ -11,21 +11,21 @@ const dropZoneRef = ref<HTMLDivElement>();
 const fileInputRef = ref<HTMLInputElement>();
 
 function onDrop(files: File[] | null) {
-  console.log('files', files)
+  processFiles(files);
 }
 
 const { isOverDropZone } = useDropZone(dropZoneRef, {
   onDrop,
-  dataTypes: ['.zip, application/zip, application/octet-stream, application/x-zip-compressed, multipart/x-zip'],
+  dataTypes: ['application/zip', 'application/octet-stream', 'application/x-zip-compressed', 'multipart/x-zip'],
 });
 
 function onFileInput(event: Event) {
   if (event?.target instanceof HTMLInputElement) {
-    processFile(event.target.files);
+    processFiles(event.target.files);
   }
 }
 
-function processFile(inputFiles: FileList | null) {
+function processFiles(inputFiles: FileList | File[] | null) {
   if (!inputFiles?.length) {
     return;
   }
@@ -58,6 +58,7 @@ function processFile(inputFiles: FileList | null) {
 
 <style scoped>
 .upload-dropzone {
+  cursor: pointer;
   height: 300px;
   border: 1px dashed grey;
   display: flex;
