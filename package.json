@@ -13,6 +13,8 @@
   },
   "dependencies": {
     "@vueuse/core": "^10.10.0",
+    "@vueuse/rxjs": "^10.10.0",
+    "dexie": "^4.0.7",
     "filesize": "^10.1.2",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0",

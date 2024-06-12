@@ -1,8 +1,15 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useRoute } from 'vue-router';
+import { UPLOAD_DIALOG_QUERY } from '@/constants/drawers';
 import UploadArchiveDialog from '@/components/UploadArchiveDialog.vue';
 
+const route = useRoute();
 const showDialog = ref(false);
+
+if (route.query.dialog === UPLOAD_DIALOG_QUERY) {
+  showDialog.value = true;
+}
 
 const guideSteps = [
   {

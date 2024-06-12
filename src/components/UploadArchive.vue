@@ -2,21 +2,16 @@
 import { ref } from 'vue';
 import { useDropZone } from '@vueuse/core';
 
-const file = defineModel('file', {
-  type: File,
-  default: null,
-});
+const emit = defineEmits(['upload']);
 
 const dropZoneRef = ref<HTMLDivElement>();
 const fileInputRef = ref<HTMLInputElement>();
-
-function onDrop(files: File[] | null) {
-  processFiles(files);
-}
+const inputUpdateKey = ref(0);
+const acceptDataTypes = ['application/zip', 'application/octet-stream', 'application/x-zip-compressed', 'multipart/x-zip'];
 
 const { isOverDropZone } = useDropZone(dropZoneRef, {
   onDrop,
-  dataTypes: ['application/zip', 'application/octet-stream', 'application/x-zip-compressed', 'multipart/x-zip'],
+  dataTypes: acceptDataTypes,
 });
 
 function onFileInput(event: Event) {
@@ -25,33 +20,38 @@ function onFileInput(event: Event) {
   }
 }
 
+function onDrop(files: File[] | null) {
+  processFiles(files);
+}
+
 function processFiles(inputFiles: FileList | File[] | null) {
   if (!inputFiles?.length) {
     return;
   }
-  file.value = inputFiles[0];
+  emit('upload', inputFiles[0]);
+  inputUpdateKey.value++;
 }
 </script>
 
 <template>
   <div
-    :class="isOverDropZone ? 'bg-blue-grey-lighten-3' : 'bg-grey-lighten-4'"
+    :class="isOverDropZone ? 'bg-blue-grey-lighten-4' : 'bg-grey-lighten-4'"
     ref="dropZoneRef"
     class="upload-dropzone"
     @click="fileInputRef?.click()"
   >
-    <div v-if="file || isOverDropZone">
-      Put files here
-    </div>
-    <div v-else>
-      Click to select files from your computer
+    <v-icon size="60" color="grey-darken-3">mdi-package-up</v-icon>
+    <div class="text-grey-darken-4 mt-3">
+      <span v-if="isOverDropZone">Put files here</span>
+      <span v-else>Click to select files from your computer</span>
     </div>
   </div>
   <input
     v-show="false"
     ref="fileInputRef"
+    :key="inputUpdateKey"
+    :accept="acceptDataTypes.join(', ')"
     type="file"
-    accept=".zip"
     @input="onFileInput"
   >
 </template>
