@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useArchiveStorage } from '@/composables/archives';
+import { useArchiveStorage } from '@/composables/archive-storage';
 import { UPLOAD_DIALOG_QUERY } from '@/constants/drawers';
 import ArchivesList from '@/components/ArchivesList.vue';
 
@@ -12,7 +12,14 @@ const archivesAvailable = computed(() => archives.value?.length);
 
 <template>
   <v-container>
-    <h1>Preview</h1>
+    <v-toolbar>
+      <v-btn
+        to="/"
+        icon="mdi-arrow-left"
+      ></v-btn>
+      <v-toolbar-title>Select archive</v-toolbar-title>
+    </v-toolbar>
+
     <ArchivesList v-if="archives" :archives="archives" />
 
     <p class="d-flex justify-center pt-10">

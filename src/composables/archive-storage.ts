@@ -27,6 +27,9 @@ function getArchiveItems() {
 }
 
 function getArchiveItem(key: number) {
+  if (isNaN(key)) {
+    throw new Error('Invalid archive id passed');
+  }
   return archivesDB.get(key);
 }
 

@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { objectOmit } from '@vueuse/core';
-import { useArchiveStorage } from '@/composables/archives';
+import { useArchiveStorage } from '@/composables/archive-storage';
 import UploadArchive from '@/components/UploadArchive.vue';
 import ArchivesList from '@/components/ArchivesList.vue';
 

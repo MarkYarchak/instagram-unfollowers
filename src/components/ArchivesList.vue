@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { filesize } from 'filesize';
-import { useArchiveStorage } from '@/composables/archives';
+import { useArchiveStorage } from '@/composables/archive-storage';
 import type { ArchiveItem } from '@/db/archives-db';
 
 interface Props {
@@ -10,10 +10,6 @@ interface Props {
 const props = defineProps<Props>();
 
 const archiveStorage = useArchiveStorage();
-
-function canPreviewArchive(archive: ArchiveItem) {
-  return !!archive;
-}
 
 function deleteFile(archive: ArchiveItem) {
   archiveStorage.deleteItem(archive.id);
@@ -39,7 +35,7 @@ function deleteFile(archive: ArchiveItem) {
       <template #append>
         <v-list-item-action>
           <v-btn
-            :disabled="!canPreviewArchive(archive)"
+            :to="{ name: 'preview-result', params: { archiveId: archive.id } }"
             variant="elevated"
             color="primary"
             class="mr-3"
@@ -47,7 +43,6 @@ function deleteFile(archive: ArchiveItem) {
             Preview
           </v-btn>
           <v-btn
-            :disabled="!canPreviewArchive(archive)"
             variant="text"
             icon="mdi-delete"
             @click="deleteFile(archive)"

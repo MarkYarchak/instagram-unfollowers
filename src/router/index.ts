@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import PreviewResultsView from '../views/PreviewResultsView.vue'
+import PreviewItemsView from '../views/PreviewItemsView.vue'
+import PreviewResultView from '../views/PreviewResultView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -13,7 +14,12 @@ const router = createRouter({
     {
       path: '/preview',
       name: 'preview',
-      component: PreviewResultsView,
+      component: PreviewItemsView,
+    },
+    {
+      path: '/preview/:archiveId',
+      name: 'preview-result',
+      component: PreviewResultView,
     },
   ]
 })
