@@ -1,6 +1,13 @@
 <script lang="ts" setup>
-import { GITHUB_SOURCE_URL } from '@/constants/links'
+import { useApplicationTheme } from '@/composables/application-theme';
+import { GITHUB_SOURCE_URL } from '@/constants/links';
 import logoImage from '@/assets/images/throw-trash.png';
+
+const applicationTheme = useApplicationTheme();
+
+function toggleTheme() {
+  applicationTheme.toggle();
+}
 </script>
 
 <template>
@@ -11,7 +18,7 @@ import logoImage from '@/assets/images/throw-trash.png';
     <v-toolbar-title>
       <router-link
         to="/"
-        class="d-inline-flex align-center text-decoration-none px-1"
+        class="d-inline-flex align-center text-decoration-none"
       >
         <v-avatar tile>
           <v-img :src="logoImage" />
@@ -39,6 +46,12 @@ import logoImage from '@/assets/images/throw-trash.png';
         Preview
       </v-btn>
     </v-toolbar-items>
+
+    <v-btn
+      icon="mdi-theme-light-dark"
+      class="ml-3"
+      @click="toggleTheme"
+    ></v-btn>
 
     <v-btn
       :href="GITHUB_SOURCE_URL"
