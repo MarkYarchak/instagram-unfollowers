@@ -8,12 +8,19 @@ import logoImage from '@/assets/images/throw-trash.png';
     color="black"
     class="position-fixed px-4"
   >
-    <v-avatar tile>
-      <v-img :src="logoImage" />
-    </v-avatar>
-    <v-toolbar-title class="font-weight-bold">
-      Instagram<br />
-      Unfollowers
+    <v-toolbar-title>
+      <router-link
+        to="/"
+        class="d-inline-flex align-center text-decoration-none px-1"
+      >
+        <v-avatar tile>
+          <v-img :src="logoImage" />
+        </v-avatar>
+        <div class="text-white font-weight-bold ml-3">
+          Instagram<br />
+          Unfollowers
+        </div>
+      </router-link>
     </v-toolbar-title>
 
     <v-toolbar-items v-if="$vuetify.display.mdAndUp">
