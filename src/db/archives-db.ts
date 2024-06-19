@@ -5,6 +5,7 @@ interface ArchiveItem {
   id: number;
   name: string;
   file: File;
+  uploadDate: Date;
 }
 
 const db = new Dexie(SOURCE_FILES_DB_NAME) as Dexie & {
@@ -12,7 +13,7 @@ const db = new Dexie(SOURCE_FILES_DB_NAME) as Dexie & {
 };
 
 db.version(3).stores({
-  [ARCHIVE_ITEMS_KEY]: '++id, name, file',
+  [ARCHIVE_ITEMS_KEY]: '++id, name, file, uploadDate',
 });
 
 export type { ArchiveItem };

@@ -39,7 +39,11 @@ async function addArchive(file: File) {
     throw new Error('File with such name was already uploaded before');
   }
 
-  return archivesDB.add({ name: file.name, file });
+  return archivesDB.add({
+    name: file.name,
+    file,
+    uploadDate: new Date(),
+  });
 }
 
 function deleteArchive(key: number) {
