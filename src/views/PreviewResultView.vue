@@ -4,7 +4,7 @@ import { useRoute } from 'vue-router';
 import { useDisplay } from 'vuetify';
 import { useArchiveStorage } from '@/composables/archive-storage';
 import { useArchiveReader } from '@/composables/archive-reader';
-import PreviewResultContent from '@/components/PreviewResultContent.vue';
+import PreviewResultContent from '@/components/result-content/PreviewResultContent.vue';
 import type { UnarchivedEntries } from '@/composables/archive-reader';
 import type { ArchiveItem } from '@/db/archives-db';
 
