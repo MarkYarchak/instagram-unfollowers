@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { useDisplay } from 'vuetify';
+import { useDebounceFn } from '@vueuse/core';
 import { useArchiveStorage } from '@/composables/archive-storage';
 import { useArchiveReader } from '@/composables/archive-reader';
 import PreviewResultContent from '@/components/result-content/PreviewResultContent.vue';
@@ -19,6 +20,8 @@ const showSearch = ref<boolean>(false);
 const error = ref<Error>();
 
 const mobileSearchOpen = computed(() => display.xs.value && showSearch.value);
+
+const onSearchDebounce = useDebounceFn(onSearch, 300);
 
 loadArchive()
   .then(parseArchive)
@@ -40,6 +43,10 @@ async function parseArchive(archive: ArchiveItem) {
 
 function setEntries(entries: UnarchivedEntries) {
   fileEntries.value = entries;
+}
+
+function onSearch(value: string) {
+  search.value = value;
 }
 
 function onSearchFieldBlur() {
@@ -65,7 +72,7 @@ function catchUnpackingError(err: Error) {
 
       <v-text-field
         v-if="showSearch"
-        v-model="search"
+        :model-value="search"
         label="Search for people"
         autofocus
         variant="solo"
@@ -73,6 +80,7 @@ function catchUnpackingError(err: Error) {
         hide-details
         class="mx-1"
         @blur="onSearchFieldBlur"
+        @update:model-value="onSearchDebounce"
       />
       <v-btn
         v-else
