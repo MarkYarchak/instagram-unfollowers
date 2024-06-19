@@ -88,7 +88,7 @@ async function loadContentFiles() {
       <div>Unable to read followers and unfollowers from your archive file</div>
     </v-alert>
 
-    <v-tabs v-model="tab">
+    <v-tabs v-model="tab" show-arrows>
       <v-tab
         v-for="tab in tabs"
         :key="tab.name"
