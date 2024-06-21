@@ -2,7 +2,8 @@
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { UPLOAD_DIALOG_QUERY } from '@/constants/drawers';
-import UploadArchiveDialog from '@/components/UploadArchiveDialog.vue';
+import FAQSection from '@/components/FAQSection.vue';
+import UploadArchiveDialog from '@/components/archives/UploadArchiveDialog.vue';
 
 const route = useRoute();
 const showDialog = ref(false);
@@ -40,31 +41,12 @@ const guideSteps = [
     },
   },
 ];
-
-const safetyCards = [
-  {
-    title: 'How should I download my Instagram data?',
-    description: 'On the Instagram personal information page click "Download or share information", then "Some your information", then in the Connection section select "Followers and following". On the next step choose preferred method to receive your information and on the following step select the period for which you want to have the details and use JSON format of data. Then Instagram will provide you the archive with results based on selected method',
-    image: '',
-  },
-  {
-    title: 'Is my data safe?',
-    description: 'Yes. Your data is completely safe as we don\'t share or store any of your personal information. This service only provides the way to preview the information you want',
-    image: '',
-  },
-  {
-    title: 'How can I prove the safety?',
-    description: 'The project is open-source and the code is available by the link to GitHub',
-    image: '',
-  },
-];
 </script>
 
 <template>
   <v-container>
     <h1>Instagram Unfollowers</h1>
     <p>Check your unfollowers without sharing any personal account data</p>
-
 
     <h2 class="mt-10 mb-3">How to get started</h2>
     <v-row>
@@ -98,15 +80,7 @@ const safetyCards = [
       </v-col>
     </v-row>
 
-    <h2 class="mt-8 mb-3">FAQ</h2>
-    <v-expansion-panels>
-      <v-expansion-panel
-        v-for="safetyCard of safetyCards"
-        :key="safetyCard.title"
-        :title="safetyCard.title"
-        :text="safetyCard.description"
-      ></v-expansion-panel>
-    </v-expansion-panels>
+    <FAQSection />
   </v-container>
 
   <UploadArchiveDialog v-model:show="showDialog" />

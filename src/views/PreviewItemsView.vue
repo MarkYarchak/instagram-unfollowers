@@ -2,7 +2,7 @@
 import { computed } from 'vue';
 import { useArchiveStorage } from '@/composables/archive-storage';
 import { UPLOAD_DIALOG_QUERY } from '@/constants/drawers';
-import ArchivesList from '@/components/ArchivesList.vue';
+import ArchivesList from '@/components/archives/ArchivesList.vue';
 
 const archiveStorage = useArchiveStorage();
 const archives = archiveStorage.getLiveItems();
