@@ -11,7 +11,9 @@ interface Props {
 const props = defineProps<Props>();
 
 const sortedArchives = computed(() => {
-  return props.archives.toSorted((a: ArchiveItem, b: ArchiveItem) => b.uploadDate.getTime() - a.uploadDate.getTime());
+  const archives = [...props.archives];
+  archives.sort((a: ArchiveItem, b: ArchiveItem) => b.uploadDate.getTime() - a.uploadDate.getTime());
+  return archives;
 });
 const archiveStorage = useArchiveStorage();
 

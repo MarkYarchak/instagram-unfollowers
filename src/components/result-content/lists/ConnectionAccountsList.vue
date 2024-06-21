@@ -20,7 +20,7 @@ const items = computed(() => {
     return connectionItems;
   }
   const getSearchField = (a: ConnectionAccount) => a.username || a.title || '';
-  return connectionItems.filter((account) => getSearchField(account).toLowerCase().includes(props.search.toLowerCase()));
+  return connectionItems.filter((account) => getSearchField(account).toLowerCase().includes(props.search!.toLowerCase()));
 });
 const lazyList = ref<Array<ConnectionAccount>>([]);
 const listHeader = computed(() => props.header && props.header.replace('$count', items.value.length.toString()));
