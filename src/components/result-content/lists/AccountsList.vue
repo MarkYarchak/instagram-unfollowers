@@ -15,8 +15,8 @@ function formatTimestamp(timestamp: number): string {
 
 <template>
   <v-list>
-    <v-list-subheader v-if="subheader">
-      {{ subheader }}
+    <v-list-subheader v-if="subheader || $slots.subheader">
+      <slot name="subheader">{{ subheader }}</slot>
     </v-list-subheader>
 
     <v-list-item

@@ -75,6 +75,7 @@ function catchUnpackingError(err: Error) {
         :model-value="search"
         label="Search for people"
         autofocus
+        clearable
         variant="solo"
         flat
         hide-details

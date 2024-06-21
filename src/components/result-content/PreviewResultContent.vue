@@ -13,7 +13,7 @@ interface Props {
 const props = defineProps<Props>();
 
 const loading = ref<boolean>(false);
-const tab = ref<string>();
+const activeTab = ref<string|number>();
 const breadcrumbs = computed(() => FOLLOWERS_AND_FOLLOWING_PATH.split('/'));
 const parsedFilesContent = ref();
 const instagramConnections = useInstagramConnections();
@@ -36,7 +36,7 @@ const tabs = [
   },
   {
     name: 'Following',
-    listHeader: '$count people follow you',
+    listHeader: 'You follow $count people',
     accountConnectionsFn: instagramConnections.getFollowing,
   },
   {
@@ -74,7 +74,7 @@ async function loadContentFiles() {
 </script>
 
 <template>
-  <div>
+  <div class="pb-3">
     <v-breadcrumbs :items="breadcrumbs"></v-breadcrumbs>
 
     <v-alert
@@ -88,7 +88,7 @@ async function loadContentFiles() {
       <div>Unable to read followers and unfollowers from your archive file</div>
     </v-alert>
 
-    <v-tabs v-model="tab" show-arrows>
+    <v-tabs v-model="activeTab" show-arrows>
       <v-tab
         v-for="tab in tabs"
         :key="tab.name"
@@ -98,13 +98,14 @@ async function loadContentFiles() {
     </v-tabs>
     <v-tabs-window
       v-if="parsedFilesContent"
-      v-model="tab"
+      v-model="activeTab"
     >
       <v-tabs-window-item
         v-for="tab in tabs"
         :key="tab.name"
       >
         <ConnectionAccountsList
+          :key="search"
           :content="parsedFilesContent"
           :search="search"
           :header="tab.listHeader"

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import AccountsList from '@/components/result-content/lists/AccountsList.vue';
 import type { ConnectionAccount } from '@/composables/instagram-connections';
 import type { ParsedFilesContent } from '@/composables/instagram-connections';
@@ -13,25 +13,62 @@ interface Props {
 
 const props = defineProps<Props>();
 
-const connectionsList = props.accountConnectionsFn(props.content);
+const items = computed(() => {
+  const connectionItems = props.accountConnectionsFn(props.content);
 
-const items = computed(computeSearchItems);
-const listHeader = computed(() => {
-  if (!props.header) {
-    return undefined;
-  }
-  return props.header.replace('$count', items.value.length.toString())
-});
-
-function computeSearchItems() {
   if (!props.search) {
-    return connectionsList;
+    return connectionItems;
   }
   const getSearchField = (a: ConnectionAccount) => a.username || a.title || '';
-  return connectionsList.filter((account) => getSearchField(account).toLowerCase().includes(props.search.toLowerCase()));
+  return connectionItems.filter((account) => getSearchField(account).toLowerCase().includes(props.search.toLowerCase()));
+});
+const lazyList = ref<Array<ConnectionAccount>>([]);
+const listHeader = computed(() => props.header && props.header.replace('$count', items.value.length.toString()));
+
+load();
+
+function load() {
+  const loadedItemsCount = lazyList.value.length;
+  if (loadedItemsCount === items.value.length) {
+    return;
+  }
+
+  const loadCount = 40;
+  const sliceEndIndex = Math.min(loadedItemsCount + loadCount, items.value.length);
+  const newItemsPart = items.value.slice(loadedItemsCount, sliceEndIndex);
+
+  lazyList.value.push(...newItemsPart);
+}
+
+function onIntersect(isIntersected: boolean) {
+  if (!isIntersected) {
+    return;
+  }
+  if (lazyList.value.length !== items.value.length) {
+    load();
+  }
 }
 </script>
 
 <template>
-  <AccountsList :subheader="listHeader" :items="items" />
+  <AccountsList :items="lazyList">
+    <template #subheader>
+      <span>{{ listHeader }}</span>
+      <span v-if="search" class="text-blue ml-2">(search applied)</span>
+    </template>
+  </AccountsList>
+  <template v-if="lazyList.length !== items.length">
+    <v-divider v-if="$vuetify.theme.current.dark" />
+    <v-sheet
+      v-intersect="{
+      handler: onIntersect,
+        options: {
+          marginRoot: '500px',
+        },
+      }"
+      class="text-center py-3"
+    >
+      Loading...
+    </v-sheet>
+  </template>
 </template>
