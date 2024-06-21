@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { UPLOAD_DIALOG_QUERY } from '@/constants/drawers';
+import { INSTAGRAM_PERSONAL_DOWNLOAD_LINK } from '@/constants/sources';
 import FAQSection from '@/components/FAQSection.vue';
 import UploadArchiveDialog from '@/components/archives/UploadArchiveDialog.vue';
 
@@ -19,7 +20,7 @@ const guideSteps = [
     action: {
       title: 'Open Instagram',
       icon: 'mdi-open-in-new',
-      href: 'https://accountscenter.instagram.com/info_and_permissions/dyi',
+      href: INSTAGRAM_PERSONAL_DOWNLOAD_LINK,
     },
   },
   {
