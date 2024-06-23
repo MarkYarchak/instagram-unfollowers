@@ -1,7 +1,5 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { objectOmit } from '@vueuse/core';
 import { useArchiveStorage } from '@/composables/archive-storage';
 import UploadArchive from '@/components/archives/UploadArchive.vue';
 import ArchivesList from '@/components/archives/ArchivesList.vue';
@@ -10,8 +8,6 @@ const show = defineModel('show', {
   type: Boolean,
   default: false,
 });
-const route = useRoute();
-const router = useRouter();
 
 const archiveStorage = useArchiveStorage();
 const archives = archiveStorage.getLiveItems();
@@ -34,21 +30,8 @@ function showAlert(text: string) {
   showAlertSnackbar.value = true;
 }
 
-function onDialogInput(open: boolean) {
-  if (!open) {
-    updateRouteNoDialog();
-  }
-}
-
 function close() {
   show.value = false;
-  updateRouteNoDialog();
-}
-
-function updateRouteNoDialog() {
-  const noDialogQuery = objectOmit(route.query, ['dialog']);
-  const updatedRoute = { ...route, query: noDialogQuery };
-  router.replace(updatedRoute);
 }
 </script>
 
@@ -57,7 +40,6 @@ function updateRouteNoDialog() {
     v-model="show"
     fullscreen
     scrollable
-    @update:model-value="onDialogInput"
   >
     <v-card>
       <v-toolbar elevation="3">

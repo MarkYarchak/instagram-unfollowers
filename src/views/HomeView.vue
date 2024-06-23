@@ -1,17 +1,27 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { computed } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { UPLOAD_DIALOG_QUERY } from '@/constants/drawers';
 import { INSTAGRAM_PERSONAL_DOWNLOAD_LINK } from '@/constants/sources';
 import FAQSection from '@/components/FAQSection.vue';
 import UploadArchiveDialog from '@/components/archives/UploadArchiveDialog.vue';
 
 const route = useRoute();
-const showDialog = ref(false);
+const router = useRouter();
 
-if (route.query.dialog === UPLOAD_DIALOG_QUERY) {
-  showDialog.value = true;
-}
+const showUploadDialog = computed({
+  get() {
+    return route.query.dialog === UPLOAD_DIALOG_QUERY;
+  },
+  set(show) {
+    const query = {
+      ...route.query,
+      dialog: show ? UPLOAD_DIALOG_QUERY : undefined,
+    };
+
+    router.push({ query, force: true });
+  },
+});
 
 const guideSteps = [
   {
@@ -29,7 +39,7 @@ const guideSteps = [
     action: {
       title: 'Upload',
       icon: 'mdi-upload',
-      onClick: () => showDialog.value = true,
+      onClick: openUploadDialog,
     },
   },
   {
@@ -42,6 +52,10 @@ const guideSteps = [
     },
   },
 ];
+
+function openUploadDialog() {
+  showUploadDialog.value = true;
+}
 </script>
 
 <template>
@@ -84,5 +98,5 @@ const guideSteps = [
     <FAQSection />
   </v-container>
 
-  <UploadArchiveDialog v-model:show="showDialog" />
+  <UploadArchiveDialog v-model:show="showUploadDialog" />
 </template>
