@@ -57,8 +57,18 @@ async function parseFollowersAndFollowing(fileEntries: UnarchivedEntries) {
 
 function getFollowers(filesContent: ParsedFilesContent, pick?: ConnectionAccountPick): ConnectionAccount[] {
   const fileName = InstagramConnectionFiles.Followers;
-  const fileContent = filesContent[fileName];
-  return fileContent.map((i: ListDataItem) => formatConnectionAccount(i, pick));
+  // Escape any regex special characters in the pattern except '*'
+  const escapedPattern = fileName.replace(/[-\/\\^$+?.()|[\]{}]/g, '\\$&');
+  const followersRegexPattern = new RegExp('^' + escapedPattern.replace(/\*/g, '.*') + '$');
+
+  const involvedFilesContent: ListDataItem[] = [];
+  for (const [key, oneFileContent] of Object.entries(filesContent)) {
+    if (followersRegexPattern.test(key)) {
+      involvedFilesContent.push(...oneFileContent);
+    }
+  }
+
+  return involvedFilesContent.map((i: ListDataItem) => formatConnectionAccount(i, pick));
 }
 
 function getFollowing(filesContent: ParsedFilesContent, pick?: ConnectionAccountPick): ConnectionAccount[] {

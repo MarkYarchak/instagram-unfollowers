@@ -16,6 +16,9 @@ const props = defineProps<Props>();
 const items = computed(() => {
   const connectionItems = props.accountConnectionsFn(props.content);
 
+  if (!connectionItems) {
+    return [];
+  }
   if (!props.search) {
     return connectionItems;
   }

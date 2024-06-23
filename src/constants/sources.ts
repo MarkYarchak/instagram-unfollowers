@@ -3,7 +3,7 @@ export const INSTAGRAM_PERSONAL_DOWNLOAD_LINK = 'https://accountscenter.instagra
 export const FOLLOWERS_AND_FOLLOWING_PATH = 'connections/followers_and_following';
 
 export enum InstagramConnectionFiles {
-  Followers = 'followers_1.json',
+  Followers = 'followers_*.json',
   Following = 'following.json',
   RecentlyUnfollowed = 'recently_unfollowed_accounts.json',
   RecentFollowRequests = 'recent_follow_requests.json',
