@@ -1,16 +1,21 @@
 <script lang="ts" setup>
-import { INSTAGRAM_PERSONAL_DOWNLOAD_LINK } from '@/constants/sources';
+interface Props {
+  href: string;
+}
+
+defineProps<Props>();
 </script>
 
 <template>
   <v-btn
-    :href="INSTAGRAM_PERSONAL_DOWNLOAD_LINK"
+    :href="href"
     target="_blank"
     size="x-small"
     color="primary"
     variant="tonal"
+    class="text-none"
   >
-    <v-icon start>mdi-open-in-new</v-icon>
     <slot></slot>
+    <v-icon end>mdi-open-in-new</v-icon>
   </v-btn>
 </template>

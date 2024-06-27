@@ -1,3 +1,5 @@
+export const INSTAGRAM_DOWNLOAD_HELP = 'https://help.instagram.com/181231772500920';
+
 export const INSTAGRAM_PERSONAL_DOWNLOAD_LINK = 'https://accountscenter.instagram.com/info_and_permissions/dyi';
 
 export const FOLLOWERS_AND_FOLLOWING_PATH = 'connections/followers_and_following';
