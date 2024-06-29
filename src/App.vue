@@ -1,19 +1,16 @@
 <script setup lang="ts">
-import { RouterView } from 'vue-router'
 import BaseAppBar from '@/components/BaseAppBar.vue';
 import BaseFooter from '@/components/BaseFooter.vue';
 </script>
 
 <template>
   <v-app>
-    <v-layout>
-      <BaseAppBar />
+    <BaseAppBar />
 
-      <v-main>
-        <RouterView />
-      </v-main>
+    <v-main>
+      <router-view />
+    </v-main>
 
-      <BaseFooter />
-    </v-layout>
+    <BaseFooter />
   </v-app>
 </template>
