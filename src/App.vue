@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import BaseAppBar from '@/components/BaseAppBar.vue';
 import BaseFooter from '@/components/BaseFooter.vue';
+import { useLabelsStore } from '@/stores/labels';
+
+useLabelsStore();
 </script>
 
 <template>
