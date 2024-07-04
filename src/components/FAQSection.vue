@@ -10,6 +10,14 @@ const furtherQuestionsText = 'If you have any further questions you can read the
 <template>
   <h2 class="mt-8 mb-3">FAQ</h2>
   <v-expansion-panels>
+    <v-expansion-panel title="Can I preview my archive on the mobile phone?">
+      <template v-slot:text>
+        <p>
+          Yes. You have to download the archive with your instagram data and then upload it here from your mobile device.
+          Everything should work in the same way as on desktop devices.
+        </p>
+      </template>
+    </v-expansion-panel>
     <v-expansion-panel title="How should I download my Instagram data?">
       <template v-slot:text>
         <ol class="pl-5">
