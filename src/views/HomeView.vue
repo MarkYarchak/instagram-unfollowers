@@ -26,7 +26,7 @@ const showUploadDialog = computed({
 const guideSteps = [
   {
     title: '1. Fetch data',
-    description: 'Download your archive from Instagram in JSON format. You can do it by the link',
+    description: 'Download your archive with information in JSON format from Instagram',
     action: {
       title: 'Open Instagram',
       icon: 'mdi-open-in-new',
@@ -35,7 +35,7 @@ const guideSteps = [
   },
   {
     title: '2. Upload data',
-    description: 'Put your downloaded archive file into the area below or press the button',
+    description: 'Select the downloaded archive from your device or put it into the specified area',
     action: {
       title: 'Upload',
       icon: 'mdi-upload',
@@ -44,10 +44,10 @@ const guideSteps = [
   },
   {
     title: '3. Get the result',
-    description: 'The result will be processed automatically and placed in preview tab',
+    description: 'The result will be processed automatically once you will open the archive to preview',
     action: {
       title: 'Preview',
-      icon: 'mdi-eye',
+      icon: 'mdi-file-find',
       to: '/preview',
     },
   },
@@ -83,7 +83,7 @@ function openUploadDialog() {
               :to="step.action.to"
               :target="step.action.href ? '_blank' : ''"
               block
-              variant="tonal"
+              variant="elevated"
               color="primary"
               @click="step.action.onClick ? step.action.onClick() : null"
             >
