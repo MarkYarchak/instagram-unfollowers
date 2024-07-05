@@ -95,6 +95,28 @@ function openUploadDialog() {
       </v-col>
     </v-row>
 
+    <v-alert
+      type="info"
+      border="top"
+      variant="tonal"
+      class="mt-10"
+    >
+      <v-alert-title>Create accounts whitelist</v-alert-title>
+      <div>Use new feature to filter the accounts you want</div>
+
+      <template #append>
+        <v-btn
+          color="blue-grey-darken-4"
+          exact
+          to="/whitelist"
+        >
+          <v-icon start>mdi-account-check</v-icon>
+          <span class="d-sm-none">Create</span>
+          <span class="d-none d-sm-inline">Add accounts</span>
+        </v-btn>
+      </template>
+    </v-alert>
+
     <FAQSection />
   </v-container>
 
