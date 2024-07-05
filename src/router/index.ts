@@ -18,6 +18,11 @@ const router = createRouter({
       name: 'preview-result',
       component: () => import('@/views/PreviewResultView.vue'),
     },
+    {
+      path: '/whitelist',
+      name: 'whitelist',
+      component: () => import('@/views/WhitelistView.vue'),
+    },
   ]
 })
 
