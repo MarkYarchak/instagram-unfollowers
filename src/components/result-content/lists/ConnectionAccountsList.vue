@@ -1,54 +1,56 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, watch } from 'vue';
+import { useLazyList } from '@/composables/lazy-list';
 import AccountsList from '@/components/result-content/lists/AccountsList.vue';
+import AccountsFilterLabels from '@/components/result-content/AccountsFilterLabels.vue';
 import type { ConnectionAccount } from '@/composables/instagram-connections';
 import type { ParsedFilesContent } from '@/composables/instagram-connections';
-
-type InfiniteScrollStatus = 'ok' | 'empty' | 'loading' | 'error';
+import type { InfiniteScrollLoadOptions } from '@/constants/vuetify';
 
 interface Props {
-  content: ParsedFilesContent,
+  content?: ParsedFilesContent,
   search?: string;
   header?: string;
-  accountConnectionsFn: (filesContent: ParsedFilesContent) => ConnectionAccount[];
+  items?: ConnectionAccount[];
+  accountConnectionsFn?: (filesContent: ParsedFilesContent) => ConnectionAccount[];
+  selectable?: boolean;
+  filter?: (account: ConnectionAccount) => boolean;
+  useFilterLabels?: boolean;
 }
 
 const props = defineProps<Props>();
+const selectedItems = defineModel<ConnectionAccount[]>('selectedItems');
 
-const items = computed(() => {
-  const connectionItems = props.accountConnectionsFn(props.content);
-
-  if (!connectionItems) {
-    return [];
-  }
-  if (!props.search) {
-    return connectionItems;
-  }
-  const getSearchField = (a: ConnectionAccount) => a.username || a.title || '';
-  return connectionItems.filter((account) => getSearchField(account).toLowerCase().includes(props.search!.toLowerCase()));
+const connectionItems = computed(() => {
+  return (props.accountConnectionsFn && props.content) ? props.accountConnectionsFn(props.content) : props.items || [];
 });
-const lazyList = ref<Array<ConnectionAccount>>([]);
-const listHeader = computed(() => props.header && props.header.replace('$count', items.value.length.toString()));
+const filteredItems = computed(() => props.filter ? connectionItems.value.filter(props.filter) : connectionItems.value);
+const matchedItems = computed(matchItems);
+const { lazyList, load } = useLazyList<ConnectionAccount>(matchedItems, { id: 'username' });
 
 load();
 
-function load() {
-  const loadedItemsCount = lazyList.value.length;
-  if (loadedItemsCount === items.value.length) {
-    return;
+const listHeader = computed(() => props.header && props.header.replace('$count', matchedItems.value.length.toString()));
+
+watch(() => filteredItems.value.length, () => {
+  if (selectedItems.value?.length && props.filter) {
+    selectedItems.value = selectedItems.value?.filter(props.filter);
   }
+});
 
-  const loadCount = 20;
-  const sliceEndIndex = Math.min(loadedItemsCount + loadCount, items.value.length);
-  const newItemsPart = items.value.slice(loadedItemsCount, sliceEndIndex);
-
-  lazyList.value.push(...newItemsPart);
+function matchItems() {
+  if (!props.search && !props.filter) {
+    return filteredItems.value;
+  }
+  const getSearchField = (a: ConnectionAccount) => a.username || a.title || '';
+  return filteredItems.value
+    .filter((account) => props.search ? getSearchField(account).toLowerCase().includes(props.search.toLowerCase()) : true);
 }
 
-function onLoad({ done }: { done: (status: InfiniteScrollStatus) => any }) {
+function onLoad({ done }: InfiniteScrollLoadOptions) {
   load();
 
-  if (lazyList.value.length !== items.value.length) {
+  if (lazyList.value.length !== matchedItems.value.length) {
     return done('ok');
   }
   done('empty');
@@ -56,19 +58,39 @@ function onLoad({ done }: { done: (status: InfiniteScrollStatus) => any }) {
 </script>
 
 <template>
-  <v-infinite-scroll @load="onLoad">
-    <AccountsList :items="lazyList">
+  <v-infinite-scroll
+    margin="500"
+    @load="onLoad"
+  >
+    <AccountsList
+      v-model:selected-items="selectedItems"
+      :items="lazyList"
+      :selectable="selectable"
+    >
       <template #subheader>
-        <span>{{ listHeader }}</span>
-        <span v-if="search" class="text-blue ml-2">(search applied)</span>
+        <div class="mr-2">{{ listHeader }}</div>
+        <AccountsFilterLabels
+          v-if="useFilterLabels"
+          :items="connectionItems"
+          :search="search"
+        />
+        <span v-else-if="search" class="text-blue">(search applied)</span>
+      </template>
+
+      <template #item-subtitle="itemProps">
+        <slot name="item-subtitle" v-bind="itemProps"></slot>
+      </template>
+
+      <template #item-actions="itemProps">
+        <slot name="item-actions" v-bind="itemProps"></slot>
       </template>
     </AccountsList>
 
-    <template v-slot:loading>
+    <template #loading>
       Loading...
     </template>
 
-    <template v-slot:empty>
+    <template #empty>
       No more items
     </template>
   </v-infinite-scroll>
