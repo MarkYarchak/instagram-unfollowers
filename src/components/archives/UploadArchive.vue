@@ -54,7 +54,7 @@ function processFiles(inputFiles: FileList | File[] | null) {
     <v-icon size="60" :color="dropzoneIconColor">mdi-package-up</v-icon>
     <div :class="dropzoneTextClasses" class="mt-3">
       <span v-if="isOverDropZone">Put files here</span>
-      <span v-else>Click to select files from your computer</span>
+      <span v-else>Click to select files from your device</span>
     </div>
   </div>
   <input
