@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, defineAsyncComponent, ref } from 'vue';
 import { useLabelsStore } from '@/stores/labels';
 import { useAccountsWhitelist } from '@/composables/account-labels/whitelist';
 import WhitelistLabels from '@/components/labels/WhitelistLabels.vue';
-import SearchFiled from '@/components/SearchFiled.vue';
 import type { AccountLabel } from '@/db/account-labels-db';
+
+const SearchFiled = defineAsyncComponent(() => import('@/components/SearchFiled.vue'));
 
 type UniqArchiveIds = string[];
 

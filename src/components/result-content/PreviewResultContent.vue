@@ -1,75 +1,91 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, inject, ref } from 'vue';
+import { useLabelsStore } from '@/stores/labels';
 import { useInstagramConnections } from '@/composables/instagram-connections';
 import { FOLLOWERS_AND_FOLLOWING_PATH } from '@/constants/sources';
 import ConnectionAccountsList from '@/components/result-content/lists/ConnectionAccountsList.vue';
-import type { UnarchivedEntries } from '@/composables/archive-reader';
+import type { ConnectionAccount } from '@/composables/instagram-connections';
+import type { ParsedFilesContent } from '@/composables/instagram-connections';
+import type { AccountLabel } from '@/db/account-labels-db';
 
 interface Props {
-  fileEntries: UnarchivedEntries;
+  filesContent: ParsedFilesContent;
   search?: string;
 }
 
-const props = defineProps<Props>();
+defineProps<Props>();
 
-const loading = ref<boolean>(false);
+const archiveId = inject<number>('archiveId', -1);
+
+const selectedItems = defineModel<ConnectionAccount[]>('selectedItems');
+
 const activeTab = ref<string|number>();
 const breadcrumbs = computed(() => FOLLOWERS_AND_FOLLOWING_PATH.split('/'));
-const parsedFilesContent = ref();
 const instagramConnections = useInstagramConnections();
+
+const labelsStore = useLabelsStore();
 
 const tabs = [
   {
     name: 'Not following back',
     listHeader: '$count people don\'t follow you back',
     accountConnectionsFn: instagramConnections.getNotFollowingBack,
+    selectableList: true,
+    filter: filterWhitelistedAndRemoved,
   },
   {
     name: 'Not follow back',
     listHeader: 'You don\'t follow back $count people',
     accountConnectionsFn: instagramConnections.getNotFollowBack,
+    selectableList: true,
+    filter: filterWhitelistedAndRemoved,
   },
   {
     name: 'Followers',
     listHeader: '$count people follow you',
     accountConnectionsFn: instagramConnections.getFollowers,
+    selectableList: true,
+    filter: filterWhitelistedAndRemoved,
   },
   {
     name: 'Following',
     listHeader: 'You follow $count people',
     accountConnectionsFn: instagramConnections.getFollowing,
+    selectableList: true,
+    filter: filterWhitelistedAndRemoved,
   },
   {
     name: 'Recently unfollowed',
     listHeader: 'You have recently stopped following $count accounts',
     accountConnectionsFn: instagramConnections.getRecentlyUnfollowed,
+    selectableList: false,
   },
   {
     name: 'Recent follow requests',
     listHeader: 'You have recently sent $count follow requests that were either confirmed or deleted',
     accountConnectionsFn: instagramConnections.getRecentFollowRequests,
+    selectableList: false,
   },
   {
     name: 'Restricted accounts',
     listHeader: 'You have limited $count people',
     accountConnectionsFn: instagramConnections.getRestrictedAccounts,
+    selectableList: false,
   },
   {
     name: 'Blocked accounts',
     listHeader: 'You have blocked $count people',
     accountConnectionsFn: instagramConnections.getBlockedAccounts,
+    selectableList: false,
   },
 ];
 
-loadContentFiles();
+function filterWhitelistedAndRemoved(account: ConnectionAccount) {
+  const isLabeledUsername = (label: AccountLabel) => label.username === account.username;
+  const isWhitelisted = labelsStore.whitelist.some(isLabeledUsername);
+  const isRemoved = labelsStore.removedByArchive(archiveId).some(isLabeledUsername);
 
-async function loadContentFiles() {
-  loading.value = true;
-
-  const instagramConnections = useInstagramConnections();
-  parsedFilesContent.value = await instagramConnections.parseFollowersAndFollowing(props.fileEntries);
-
-  loading.value = false;
+  return !isWhitelisted && !isRemoved;
 }
 </script>
 
@@ -77,18 +93,11 @@ async function loadContentFiles() {
   <div class="pb-3">
     <v-breadcrumbs :items="breadcrumbs"></v-breadcrumbs>
 
-    <v-alert
-      v-if="!parsedFilesContent && !loading"
-      type="warning"
-      variant="tonal"
-      border="start"
-      class="mx-2"
+    <v-tabs
+      v-model="activeTab"
+      :disabled="!!selectedItems?.length"
+      show-arrows
     >
-      <v-alert-title>Failed</v-alert-title>
-      <div>Unable to read followers and unfollowers from your archive file</div>
-    </v-alert>
-
-    <v-tabs v-model="activeTab" show-arrows>
       <v-tab
         v-for="tab in tabs"
         :key="tab.name"
@@ -96,20 +105,21 @@ async function loadContentFiles() {
         {{ tab.name }}
       </v-tab>
     </v-tabs>
-    <v-tabs-window
-      v-if="parsedFilesContent"
-      v-model="activeTab"
-    >
+    <v-tabs-window v-model="activeTab">
       <v-tabs-window-item
         v-for="tab in tabs"
         :key="tab.name"
       >
         <ConnectionAccountsList
+          v-model:selected-items="selectedItems"
           :key="search"
-          :content="parsedFilesContent"
+          :content="filesContent"
           :search="search"
           :header="tab.listHeader"
           :account-connections-fn="tab.accountConnectionsFn"
+          :selectable="tab.selectableList"
+          :filter="tab.filter"
+          use-filter-labels
         />
       </v-tabs-window-item>
     </v-tabs-window>

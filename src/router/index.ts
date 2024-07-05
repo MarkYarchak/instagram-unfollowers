@@ -11,12 +11,25 @@ const router = createRouter({
     {
       path: '/preview',
       name: 'preview',
-      component: () => import('@/views/PreviewItemsView.vue'),
+      component: () => import('@/views/archives/PreviewArchivesView.vue'),
     },
     {
       path: '/preview/:archiveId',
-      name: 'preview-result',
-      component: () => import('@/views/PreviewResultView.vue'),
+      name: 'preview-archive',
+      redirect: { name: 'preview-result'},
+      component: () => import('@/views/archives/PreviewArchiveView.vue'),
+      children: [
+        {
+          path: '',
+          name: 'preview-result',
+          component: () => import('@/views/archives/PreviewArchiveResultView.vue'),
+        },
+        {
+          path: 'trash',
+          name: 'preview-result-trash',
+          component: () => import('@/views/archives/RemovedUnfollowersView.vue'),
+        },
+      ],
     },
     {
       path: '/whitelist',

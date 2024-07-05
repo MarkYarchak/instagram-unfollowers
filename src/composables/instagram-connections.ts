@@ -45,7 +45,7 @@ async function parseFollowersAndFollowing(fileEntries: UnarchivedEntries) {
     .map(e => [e[0].slice(FOLLOWERS_AND_FOLLOWING_PATH.length + 1), e[1]] as [string, ZipEntry]);
 
   if (!followersAndFollowingEntries.length) {
-    return null;
+    throw new Error('Unable to read followers and unfollowers from your archive file');
   }
 
   for await (const [name, content] of followersAndFollowingEntries) {
