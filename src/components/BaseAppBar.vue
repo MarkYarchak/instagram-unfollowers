@@ -30,19 +30,20 @@ function toggleTheme() {
       </router-link>
     </v-toolbar-title>
 
-    <v-toolbar-items v-if="$vuetify.display.mdAndUp">
+    <v-toolbar-items v-if="$vuetify.display.smAndUp">
       <v-btn
         exact
-        to="/"
+        to="/whitelist"
+        theme="dark"
       >
-        <v-icon start>mdi-home</v-icon>
-        Home
+        <v-icon start>mdi-account-check</v-icon>
+        Whitelist
       </v-btn>
       <v-btn
         exact
         to="/preview"
       >
-        <v-icon start>mdi-eye</v-icon>
+        <v-icon start>mdi-file-find</v-icon>
         Preview
       </v-btn>
     </v-toolbar-items>
