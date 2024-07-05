@@ -13,7 +13,7 @@ function toggleTheme() {
 <template>
   <v-app-bar
     color="black"
-    class="position-fixed px-4"
+    class="px-4"
   >
     <v-toolbar-title>
       <router-link
