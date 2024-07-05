@@ -6,6 +6,7 @@ import { useRemovedAccountsStorage } from '@/composables/account-labels/removed'
 import type { ConnectionAccount } from '@/composables/instagram-connections';
 
 const SearchFiled = defineAsyncComponent(() => import('@/components/SearchFiled.vue'));
+const SelectCompareDialog = defineAsyncComponent(() => import('@/components/archives/SelectCompareDialog.vue'));
 
 interface Props {
   loading?: boolean;
@@ -121,6 +122,13 @@ function toggleCompareDialog() {
         icon="mdi-magnify"
         @click="showSearch = true"
       ></v-btn>
+      <v-btn
+        v-if="!mobileSearchOpen"
+        :disabled="loading || !!error"
+        icon="mdi-file-compare"
+        class="ml-3"
+        @click="toggleCompareDialog"
+      ></v-btn>
     </template>
 
     <v-btn
@@ -134,4 +142,6 @@ function toggleCompareDialog() {
       @click="$vuetify.display.smAndUp && emit('click:trash', $event)"
     ></v-btn>
   </v-toolbar>
+
+  <SelectCompareDialog v-model:show="showCompareDialog" />
 </template>

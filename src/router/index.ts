@@ -29,6 +29,11 @@ const router = createRouter({
           name: 'preview-result-trash',
           component: () => import('@/views/archives/RemovedUnfollowersView.vue'),
         },
+        {
+          path: 'compare/:compareId',
+          name: 'compare-archive',
+          component: () => import('@/views/archives/CompareArchivesView.vue'),
+        },
       ],
     },
     {
