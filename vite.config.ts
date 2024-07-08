@@ -10,6 +10,32 @@ const pwaOptions: Partial<VitePWAOptions> = {
     name: 'Instagram Unfollowers',
     description: 'A safe and comfortable way to preview Instagram unfollowers',
     theme_color: '#E8EAED',
+    icons: [
+      {
+        src: '/images/icons-256.png',
+        type: 'image/png',
+        sizes: '256x256',
+        purpose: 'maskable',
+      },
+      {
+        src: '/images/icons-256.png',
+        type: 'image/png',
+        sizes: '256x256',
+        purpose: 'any',
+      },
+      {
+        src: '/images/icons-512.png',
+        type: 'image/png',
+        sizes: '512x512',
+        purpose: 'any',
+      },
+      {
+        src: '/images/icons-512.png',
+        type: 'image/png',
+        sizes: '512x512',
+        purpose: 'maskable',
+      },
+    ],
   },
 };
 
