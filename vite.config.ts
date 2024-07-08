@@ -8,8 +8,10 @@ const pwaOptions: Partial<VitePWAOptions> = {
   registerType: 'autoUpdate',
   manifest: {
     name: 'Instagram Unfollowers',
+    short_name: 'Unfollowers',
     description: 'A safe and comfortable way to preview Instagram unfollowers',
-    theme_color: '#E8EAED',
+    theme_color: '#000000',
+    background_color: '#000000',
     icons: [
       {
         src: '/images/icons-256.png',
