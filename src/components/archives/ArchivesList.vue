@@ -40,6 +40,7 @@ function deleteFile(archive: ArchiveItem) {
       :key="archive.name"
       :to="selectable ? undefined : { name: 'preview-result', params: { archiveId: archive.id } }"
       :value="selectable ? archive : undefined"
+      lines="two"
     >
       <template #prepend>
         <v-list-item-media start>

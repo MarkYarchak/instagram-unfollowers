@@ -60,10 +60,7 @@ function close() {
           </template>
 
           <template #item-append="{ isActive }">
-            <v-checkbox-btn
-              :model-value="isActive"
-              class="my-1"
-            />
+            <v-checkbox-btn :model-value="isActive" />
           </template>
         </ArchivesList>
       </v-card-text>
