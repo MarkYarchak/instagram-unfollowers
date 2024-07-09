@@ -3,10 +3,10 @@ import { inject } from 'vue';
 import { useRemovedLabeledAccounts } from '@/composables/account-labels/labeled-accounts';
 import { useRemovedAccountsStorage } from '@/composables/account-labels/removed';
 import ConnectionAccountsList from '@/components/result-content/lists/ConnectionAccountsList.vue';
-import type { ConnectionAccount, ParsedFilesContent } from '@/composables/instagram-connections';
+import type { ConnectionAccount, ConnectionsData } from '@/composables/instagram-connections';
 
 interface Props {
-  filesContent: ParsedFilesContent;
+  connectionsData: ConnectionsData;
 }
 
 const props = defineProps<Props>();
@@ -19,7 +19,7 @@ if (!archiveId) {
 
 const listHeader = 'You have removed $count item(s) in this archive';
 
-const { accounts: removedConnectionAccounts, findAccountLabel } = useRemovedLabeledAccounts(props.filesContent, archiveId);
+const { accounts: removedConnectionAccounts, findAccountLabel } = useRemovedLabeledAccounts(props.connectionsData, archiveId);
 
 function formatItemSubtitle(account: ConnectionAccount) {
   const label = findAccountLabel(account);

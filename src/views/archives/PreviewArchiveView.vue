@@ -6,7 +6,7 @@ import { useArchiveReader } from '@/composables/archive-reader';
 import { useInstagramConnections } from '@/composables/instagram-connections';
 import type { ArchiveItem } from '@/db/archives-db';
 import type { UnarchivedEntries } from '@/composables/archive-reader';
-import type { ParsedFilesContent } from '@/composables/instagram-connections';
+import type { ParsedFilesContent, ConnectionsData } from '@/composables/instagram-connections';
 
 const route = useRoute();
 const archiveId = Number(route.params.archiveId);
@@ -15,12 +15,14 @@ provide('archiveId', archiveId);
 
 const archiveStorage = useArchiveStorage();
 const archiveReader = useArchiveReader();
-const parsedFilesContent = ref<ParsedFilesContent>();
+const instagramConnections = useInstagramConnections();
+const connectionsData = ref<ConnectionsData>();
 const error = ref<Error>();
 
 loadArchive()
   .then(parseArchive)
   .then(loadContentFiles)
+  .then(prepareConnectionsData)
   .catch(catchParsingError);
 
 async function loadArchive() {
@@ -36,9 +38,12 @@ async function parseArchive(archive: ArchiveItem) {
   return entries;
 }
 
-async function loadContentFiles(fileEntries: UnarchivedEntries) {
-  const instagramConnections = useInstagramConnections();
-  parsedFilesContent.value = await instagramConnections.parseFollowersAndFollowing(fileEntries);
+function loadContentFiles(fileEntries: UnarchivedEntries) {
+  return instagramConnections.parseFollowersAndFollowing(fileEntries);
+}
+
+function prepareConnectionsData(filesContent: ParsedFilesContent) {
+  connectionsData.value = instagramConnections.getFullData(filesContent);
 }
 
 function catchParsingError(err: Error) {
@@ -49,7 +54,7 @@ function catchParsingError(err: Error) {
 <template>
   <v-container>
     <router-view
-      :files-content="parsedFilesContent"
+      :connections-data="connectionsData"
       :error="error"
     />
   </v-container>

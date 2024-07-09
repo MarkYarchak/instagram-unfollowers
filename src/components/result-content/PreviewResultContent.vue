@@ -1,15 +1,13 @@
 <script lang="ts" setup>
 import { computed, inject, ref } from 'vue';
 import { useLabelsStore } from '@/stores/labels';
-import { useInstagramConnections } from '@/composables/instagram-connections';
 import { FOLLOWERS_AND_FOLLOWING_PATH } from '@/constants/sources';
 import ConnectionAccountsList from '@/components/result-content/lists/ConnectionAccountsList.vue';
-import type { ConnectionAccount } from '@/composables/instagram-connections';
-import type { ParsedFilesContent } from '@/composables/instagram-connections';
+import type { ConnectionAccount, ConnectionsData } from '@/composables/instagram-connections';
 import type { AccountLabel } from '@/db/account-labels-db';
 
 interface Props {
-  filesContent: ParsedFilesContent;
+  connectionsData: ConnectionsData;
   search?: string;
 }
 
@@ -21,7 +19,6 @@ const selectedItems = defineModel<ConnectionAccount[]>('selectedItems');
 
 const activeTab = ref<string|number>();
 const breadcrumbs = computed(() => FOLLOWERS_AND_FOLLOWING_PATH.split('/'));
-const instagramConnections = useInstagramConnections();
 
 const labelsStore = useLabelsStore();
 
@@ -29,53 +26,53 @@ const tabs = [
   {
     name: 'Not following back',
     listHeader: '$count people don\'t follow you back',
-    items: instagramConnections.getNotFollowingBack(props.filesContent),
+    items: props.connectionsData.notFollowingBack,
     selectableList: true,
     filter: filterWhitelistedAndRemoved,
   },
   {
     name: 'Not follow back',
     listHeader: 'You don\'t follow back $count people',
-    items: instagramConnections.getNotFollowBack(props.filesContent),
+    items: props.connectionsData.notFollowBack,
     selectableList: true,
     filter: filterWhitelistedAndRemoved,
   },
   {
     name: 'Followers',
     listHeader: '$count people follow you',
-    items: instagramConnections.getFollowers(props.filesContent),
+    items: props.connectionsData.followers,
     selectableList: true,
     filter: filterWhitelistedAndRemoved,
   },
   {
     name: 'Following',
     listHeader: 'You follow $count people',
-    items: instagramConnections.getFollowing(props.filesContent),
+    items: props.connectionsData.following,
     selectableList: true,
     filter: filterWhitelistedAndRemoved,
   },
   {
     name: 'Recently unfollowed',
     listHeader: 'You have recently stopped following $count accounts',
-    items: instagramConnections.getRecentlyUnfollowed(props.filesContent),
+    items: props.connectionsData.recentlyUnfollowed,
     selectableList: false,
   },
   {
     name: 'Recent follow requests',
     listHeader: 'You have recently sent $count follow requests that were either confirmed or deleted',
-    items: instagramConnections.getRecentFollowRequests(props.filesContent),
+    items: props.connectionsData.recentFollowRequests,
     selectableList: false,
   },
   {
     name: 'Restricted accounts',
     listHeader: 'You have limited $count people',
-    items: instagramConnections.getRestrictedAccounts(props.filesContent),
+    items: props.connectionsData.restrictedAccounts,
     selectableList: false,
   },
   {
     name: 'Blocked accounts',
     listHeader: 'You have blocked $count people',
-    items: instagramConnections.getBlockedAccounts(props.filesContent),
+    items: props.connectionsData.blockedAccounts,
     selectableList: false,
   },
 ];

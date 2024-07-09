@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import RemovedLabelAccounts from '@/components/labels/RemovedLabelAccounts.vue';
-import type { ParsedFilesContent } from '@/composables/instagram-connections';
+import type { ConnectionsData } from '@/composables/instagram-connections';
 
 interface Props {
-  filesContent: ParsedFilesContent;
+  connectionsData: ConnectionsData;
 }
 
 defineProps<Props>();
@@ -36,6 +36,6 @@ function close() {
       </v-toolbar>
     </template>
 
-    <RemovedLabelAccounts :files-content="filesContent" />
+    <RemovedLabelAccounts :connections-data="connectionsData" />
   </v-navigation-drawer>
 </template>

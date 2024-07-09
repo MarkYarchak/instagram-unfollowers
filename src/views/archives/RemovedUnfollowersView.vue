@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import RemovedLabelAccounts from '@/components/labels/RemovedLabelAccounts.vue';
-import type { ParsedFilesContent } from '@/composables/instagram-connections';
+import type { ConnectionsData } from '@/composables/instagram-connections';
 
 interface Props {
-  filesContent?: ParsedFilesContent;
+  connectionsData?: ConnectionsData;
   error?: Error | null;
 }
 
@@ -31,8 +31,8 @@ defineProps<Props>();
     <div>{{ error.message }}</div>
   </v-alert>
   <RemovedLabelAccounts
-    v-else-if="filesContent"
-    :files-content="filesContent"
+    v-else-if="connectionsData"
+    :connections-data="connectionsData"
   />
   <div v-else class="d-flex justify-center py-5">
     <v-progress-circular

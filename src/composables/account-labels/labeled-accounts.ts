@@ -1,34 +1,31 @@
 import { computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useLabelsStore } from '@/stores/labels';
-import { useInstagramConnections } from '@/composables/instagram-connections';
 import type { Ref, ComputedRef } from 'vue';
 import type { AccountLabel } from '@/db/account-labels-db';
-import type { ConnectionAccount } from '@/composables/instagram-connections';
-import type { ParsedFilesContent } from '@/composables/instagram-connections';
+import type { ConnectionAccount, ConnectionsData } from '@/composables/instagram-connections';
 
 interface LabeledAccount {
   label: AccountLabel;
   account: ConnectionAccount;
 }
 
-export function useWhitelistedLabeledAccounts(filesContent: ParsedFilesContent) {
+export function useWhitelistedLabeledAccounts(connectionsData: ConnectionsData) {
   const labelsStore = useLabelsStore();
   const { whitelist } = storeToRefs(labelsStore);
 
-  return createAPI(filesContent, whitelist);
+  return createAPI(connectionsData, whitelist);
 }
 
-export function useRemovedLabeledAccounts(filesContent: ParsedFilesContent, archiveId?: number) {
+export function useRemovedLabeledAccounts(connectionsData: ConnectionsData, archiveId?: number) {
   const labelsStore = useLabelsStore();
   const { removed } = storeToRefs(labelsStore);
   const removedLabels = archiveId ? computed(() => labelsStore.removedByArchive(archiveId)) : removed;
 
-  return createAPI(filesContent, removedLabels);
+  return createAPI(connectionsData, removedLabels);
 }
 
-function createAPI(filesContent: ParsedFilesContent, labelsListRef: Ref<AccountLabel[]>) {
-  const instagramConnections = useInstagramConnections();
+function createAPI(connectionsData: ConnectionsData, labelsListRef: Ref<AccountLabel[]>) {
   const liveItems = formatLabeledItems(labelsListRef);
   const accounts = computed(() => liveItems.value.map(i => i.account));
 
@@ -42,9 +39,8 @@ function createAPI(filesContent: ParsedFilesContent, labelsListRef: Ref<AccountL
   }
 
   function getUniqConnectionAccounts() {
-    const followers = instagramConnections.getFollowers(filesContent);
-    const following = instagramConnections.getFollowing(filesContent);
-    const connectionAccounts = [...followers];
+    const { followers, following } = connectionsData;
+    const connectionAccounts = [...connectionsData.followers];
 
     for (const account of following) {
       if (followers.some(f => f.username === account.username)) {

@@ -2,12 +2,12 @@
 import { defineAsyncComponent, ref } from 'vue';
 import PreviewResultToolbar from '@/components/result-content/PreviewResultToolbar.vue';
 import PreviewResultContent from '@/components/result-content/PreviewResultContent.vue';
-import type { ConnectionAccount, ParsedFilesContent } from '@/composables/instagram-connections';
+import type { ConnectionAccount, ConnectionsData } from '@/composables/instagram-connections';
 
 const RemovedLabelsDrawer = defineAsyncComponent(() => import('@/components/result-content/RemovedLabelsDrawer.vue'));
 
 interface Props {
-  filesContent?: ParsedFilesContent;
+  connectionsData?: ConnectionsData;
   error?: Error;
 }
 
@@ -26,7 +26,7 @@ function toggleLabelsDrawer() {
   <PreviewResultToolbar
     v-model:search="search"
     v-model:selected="selectedAccounts"
-    :loading="!filesContent && !error"
+    :loading="!connectionsData && !error"
     :error="error"
     @click:trash="toggleLabelsDrawer"
   />
@@ -42,9 +42,9 @@ function toggleLabelsDrawer() {
     <div>{{ error.message }}</div>
   </v-alert>
   <PreviewResultContent
-    v-else-if="filesContent"
+    v-else-if="connectionsData"
     v-model:selected-items="selectedAccounts"
-    :files-content="filesContent"
+    :connections-data="connectionsData"
     :search="search"
   />
   <div v-else class="d-flex justify-center py-5">
@@ -55,8 +55,8 @@ function toggleLabelsDrawer() {
   </div>
 
   <RemovedLabelsDrawer
-    v-if="$vuetify.display.smAndUp && filesContent"
+    v-if="$vuetify.display.smAndUp && connectionsData"
     v-model:show="showLabelsDrawer"
-    :files-content="filesContent"
+    :connections-data="connectionsData"
   />
 </template>

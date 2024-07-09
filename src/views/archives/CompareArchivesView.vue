@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import type { ParsedFilesContent } from '@/composables/instagram-connections';
+import type { ConnectionsData } from '@/composables/instagram-connections';
 
 interface Props {
-  filesContent?: ParsedFilesContent;
+  connectionsData?: ConnectionsData;
   error?: Error;
 }
 defineProps<Props>();

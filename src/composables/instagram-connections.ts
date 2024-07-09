@@ -7,6 +7,17 @@ export interface ParsedFilesContent {
   [k: string]: any;
 }
 
+export interface ConnectionsData {
+  followers: ConnectionAccount[];
+  following: ConnectionAccount[];
+  notFollowingBack: ConnectionAccount[];
+  notFollowBack: ConnectionAccount[];
+  recentlyUnfollowed: ConnectionAccount[];
+  recentFollowRequests: ConnectionAccount[];
+  restrictedAccounts: ConnectionAccount[];
+  blockedAccounts: ConnectionAccount[];
+}
+
 export interface ConnectionAccount {
   title?: string;
   username?: string;
@@ -25,6 +36,7 @@ interface ListDataItem {
 export function useInstagramConnections() {
   return {
     parseFollowersAndFollowing,
+    getFullData,
     getFollowers,
     getFollowing,
     getNotFollowingBack,
@@ -53,6 +65,19 @@ async function parseFollowersAndFollowing(fileEntries: UnarchivedEntries) {
   }
 
   return parsedEntries;
+}
+
+function getFullData(filesContent: ParsedFilesContent): ConnectionsData {
+  return {
+    followers: getFollowers(filesContent),
+    following: getFollowing(filesContent),
+    notFollowingBack: getNotFollowingBack(filesContent),
+    notFollowBack: getNotFollowBack(filesContent),
+    recentlyUnfollowed: getRecentlyUnfollowed(filesContent),
+    recentFollowRequests: getRecentFollowRequests(filesContent),
+    restrictedAccounts: getRestrictedAccounts(filesContent),
+    blockedAccounts: getBlockedAccounts(filesContent),
+  };
 }
 
 function getFollowers(filesContent: ParsedFilesContent, pick?: ConnectionAccountPick): ConnectionAccount[] {
