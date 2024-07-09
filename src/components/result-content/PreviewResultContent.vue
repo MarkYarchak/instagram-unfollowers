@@ -13,7 +13,7 @@ interface Props {
   search?: string;
 }
 
-defineProps<Props>();
+const props = defineProps<Props>();
 
 const archiveId = inject<number>('archiveId', -1);
 
@@ -29,53 +29,53 @@ const tabs = [
   {
     name: 'Not following back',
     listHeader: '$count people don\'t follow you back',
-    accountConnectionsFn: instagramConnections.getNotFollowingBack,
+    items: instagramConnections.getNotFollowingBack(props.filesContent),
     selectableList: true,
     filter: filterWhitelistedAndRemoved,
   },
   {
     name: 'Not follow back',
     listHeader: 'You don\'t follow back $count people',
-    accountConnectionsFn: instagramConnections.getNotFollowBack,
+    items: instagramConnections.getNotFollowBack(props.filesContent),
     selectableList: true,
     filter: filterWhitelistedAndRemoved,
   },
   {
     name: 'Followers',
     listHeader: '$count people follow you',
-    accountConnectionsFn: instagramConnections.getFollowers,
+    items: instagramConnections.getFollowers(props.filesContent),
     selectableList: true,
     filter: filterWhitelistedAndRemoved,
   },
   {
     name: 'Following',
     listHeader: 'You follow $count people',
-    accountConnectionsFn: instagramConnections.getFollowing,
+    items: instagramConnections.getFollowing(props.filesContent),
     selectableList: true,
     filter: filterWhitelistedAndRemoved,
   },
   {
     name: 'Recently unfollowed',
     listHeader: 'You have recently stopped following $count accounts',
-    accountConnectionsFn: instagramConnections.getRecentlyUnfollowed,
+    items: instagramConnections.getRecentlyUnfollowed(props.filesContent),
     selectableList: false,
   },
   {
     name: 'Recent follow requests',
     listHeader: 'You have recently sent $count follow requests that were either confirmed or deleted',
-    accountConnectionsFn: instagramConnections.getRecentFollowRequests,
+    items: instagramConnections.getRecentFollowRequests(props.filesContent),
     selectableList: false,
   },
   {
     name: 'Restricted accounts',
     listHeader: 'You have limited $count people',
-    accountConnectionsFn: instagramConnections.getRestrictedAccounts,
+    items: instagramConnections.getRestrictedAccounts(props.filesContent),
     selectableList: false,
   },
   {
     name: 'Blocked accounts',
     listHeader: 'You have blocked $count people',
-    accountConnectionsFn: instagramConnections.getBlockedAccounts,
+    items: instagramConnections.getBlockedAccounts(props.filesContent),
     selectableList: false,
   },
 ];
@@ -113,10 +113,9 @@ function filterWhitelistedAndRemoved(account: ConnectionAccount) {
         <ConnectionAccountsList
           v-model:selected-items="selectedItems"
           :key="search"
-          :content="filesContent"
+          :items="tab.items"
           :search="search"
           :header="tab.listHeader"
-          :account-connections-fn="tab.accountConnectionsFn"
           :selectable="tab.selectableList"
           :filter="tab.filter"
           use-filter-labels

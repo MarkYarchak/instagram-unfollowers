@@ -4,15 +4,12 @@ import { useLazyList } from '@/composables/lazy-list';
 import AccountsList from '@/components/result-content/lists/AccountsList.vue';
 import AccountsFilterLabels from '@/components/result-content/AccountsFilterLabels.vue';
 import type { ConnectionAccount } from '@/composables/instagram-connections';
-import type { ParsedFilesContent } from '@/composables/instagram-connections';
 import type { InfiniteScrollLoadOptions } from '@/constants/vuetify';
 
 interface Props {
-  content?: ParsedFilesContent,
   search?: string;
   header?: string;
-  items?: ConnectionAccount[];
-  accountConnectionsFn?: (filesContent: ParsedFilesContent) => ConnectionAccount[];
+  items: ConnectionAccount[];
   selectable?: boolean;
   filter?: (account: ConnectionAccount) => boolean;
   useFilterLabels?: boolean;
@@ -21,10 +18,7 @@ interface Props {
 const props = defineProps<Props>();
 const selectedItems = defineModel<ConnectionAccount[]>('selectedItems');
 
-const connectionItems = computed(() => {
-  return (props.accountConnectionsFn && props.content) ? props.accountConnectionsFn(props.content) : props.items || [];
-});
-const filteredItems = computed(() => props.filter ? connectionItems.value.filter(props.filter) : connectionItems.value);
+const filteredItems = computed(() => props.filter ? props.items.filter(props.filter) : props.items);
 const matchedItems = computed(matchItems);
 const { lazyList, load } = useLazyList<ConnectionAccount>(matchedItems, { id: 'username' });
 
@@ -71,7 +65,7 @@ function onLoad({ done }: InfiniteScrollLoadOptions) {
         <div class="mr-2">{{ listHeader }}</div>
         <AccountsFilterLabels
           v-if="useFilterLabels"
-          :items="connectionItems"
+          :items="items"
           :search="search"
         />
         <span v-else-if="search" class="text-blue">(search applied)</span>
