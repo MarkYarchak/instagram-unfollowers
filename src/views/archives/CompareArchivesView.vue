@@ -1,11 +1,36 @@
 <script lang="ts" setup>
+import { ref } from 'vue';
+import { useRoute } from 'vue-router';
+import { useInstagramArchive } from '@/composables/instagram-archive';
 import type { ConnectionsData } from '@/composables/instagram-connections';
 
 interface Props {
   connectionsData?: ConnectionsData;
   error?: Error;
 }
-defineProps<Props>();
+const props = defineProps<Props>();
+
+const route = useRoute();
+const compareId = Number(route.params.compareId);
+
+const instagramArchive = useInstagramArchive(compareId);
+const compareConnectionsData = ref<ConnectionsData>();
+const compareError = ref<Error>();
+
+const comparedData = ref();
+
+instagramArchive
+    .parseConnectionsData()
+    .then(setCompareConnectionsData)
+    .catch(catchParsingError);
+
+function setCompareConnectionsData(data: ConnectionsData) {
+  compareConnectionsData.value = data;
+}
+
+function catchParsingError(err: Error) {
+  compareError.value = err;
+}
 </script>
 
 <template>
@@ -35,4 +60,8 @@ defineProps<Props>();
       </v-btn>
     </template>
   </v-alert>
+
+  <div>
+
+  </div>
 </template>
