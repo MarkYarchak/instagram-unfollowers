@@ -15,6 +15,7 @@
     "@vueuse/core": "^10.10.0",
     "@vueuse/integrations": "^10.11.0",
     "@vueuse/rxjs": "^10.10.0",
+    "deep-object-diff": "^1.1.9",
     "dexie": "^4.0.7",
     "filesize": "^10.1.2",
     "pinia": "^2.1.7",

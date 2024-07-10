@@ -2,13 +2,14 @@
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { useInstagramArchive } from '@/composables/instagram-archive';
+import ComparedConnections from '@/components/compare/ComparedConnections.vue';
 import type { ConnectionsData } from '@/composables/instagram-connections';
 
 interface Props {
   connectionsData?: ConnectionsData;
   error?: Error;
 }
-const props = defineProps<Props>();
+defineProps<Props>();
 
 const route = useRoute();
 const compareId = Number(route.params.compareId);
@@ -17,12 +18,10 @@ const instagramArchive = useInstagramArchive(compareId);
 const compareConnectionsData = ref<ConnectionsData>();
 const compareError = ref<Error>();
 
-const comparedData = ref();
-
 instagramArchive
-    .parseConnectionsData()
-    .then(setCompareConnectionsData)
-    .catch(catchParsingError);
+  .parseConnectionsData()
+  .then(setCompareConnectionsData)
+  .catch(catchParsingError);
 
 function setCompareConnectionsData(data: ConnectionsData) {
   compareConnectionsData.value = data;
@@ -46,7 +45,7 @@ function catchParsingError(err: Error) {
 
   <v-alert
     type="warning"
-    class="mt-3"
+    class="my-3"
   >
     <v-alert-title>In development</v-alert-title>
     <div>This feature is in development. Contact the author to details</div>
@@ -61,7 +60,15 @@ function catchParsingError(err: Error) {
     </template>
   </v-alert>
 
-  <div>
-
+  <ComparedConnections
+    v-if="connectionsData && compareConnectionsData"
+    :connections-data="connectionsData"
+    :compare-connections-data="compareConnectionsData"
+  />
+  <div v-else class="d-flex justify-center py-5">
+    <v-progress-circular
+      indeterminate
+      size="50"
+    />
   </div>
 </template>

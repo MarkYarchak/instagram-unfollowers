@@ -14,9 +14,9 @@ const connectionsData = ref<ConnectionsData>();
 const error = ref<Error>();
 
 instagramArchive
-    .parseConnectionsData()
-    .then(setConnectionsData)
-    .catch(catchParsingError);
+  .parseConnectionsData()
+  .then(setConnectionsData)
+  .catch(catchParsingError);
 
 function setConnectionsData(data: ConnectionsData) {
   connectionsData.value = data;
