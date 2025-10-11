@@ -33,11 +33,11 @@ function getItemValue(item: ConnectionAccount) {
       :account="item"
       :selectable="selectable"
     >
-      <template #subtitle>
-        <slot name="item-subtitle"></slot>
+      <template #subtitle="itemProps">
+        <slot name="item-subtitle" v-bind="itemProps"></slot>
       </template>
-      <template #actions>
-        <slot name="item-actions"></slot>
+      <template #actions="itemProps">
+        <slot name="item-actions" v-bind="itemProps"></slot>
       </template>
     </AccountListItem>
   </v-list>
