@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import AccountItemMenu from '@/components/result-content/lists/AccountItemMenu.vue';
+import AccountListItem from '@/components/result-content/lists/AccountListItem.vue';
 import type { ConnectionAccount } from '@/composables/instagram-connections';
 
 interface Props {
@@ -15,10 +15,6 @@ const selectedItems = defineModel<ConnectionAccount[]>('selectedItems');
 function getItemValue(item: ConnectionAccount) {
   return item.username || item.title;
 }
-
-function formatTimestamp(timestamp: number): string {
-  return new Date(timestamp * 1000).toLocaleString();
-}
 </script>
 
 <template>
@@ -31,50 +27,18 @@ function formatTimestamp(timestamp: number): string {
       <slot name="subheader">{{ subheader }}</slot>
     </v-list-subheader>
 
-    <v-list-item
+    <AccountListItem
       v-for="item of items"
       :key="getItemValue(item)"
-      :value="selectable ? item : null"
+      :account="item"
+      :selectable="selectable"
     >
-      <template v-if="selectable" #prepend="{ isActive }">
-        <v-list-item-action start>
-          <v-checkbox-btn :model-value="isActive"></v-checkbox-btn>
-        </v-list-item-action>
+      <template #subtitle>
+        <slot name="item-subtitle"></slot>
       </template>
-
-      <v-list-item-title>{{ getItemValue(item) }}</v-list-item-title>
-      <v-list-item-subtitle v-if="item.timestamp || $slots['item-subtitle']?.length">
-        <slot name="item-subtitle" :item="item">
-          {{ formatTimestamp(item.timestamp) }}
-        </slot>
-      </v-list-item-subtitle>
-
-      <template #append>
-        <v-list-item-action end>
-          <v-btn
-            :href="item.href"
-            target="_blank"
-            variant="flat"
-            color="blue-grey-lighten-4"
-            class="mr-3"
-            @click.stop=""
-          >
-            <v-icon :start="$vuetify.display.smAndUp">mdi-instagram</v-icon>
-            <span v-if="$vuetify.display.smAndUp">Open</span>
-          </v-btn>
-          <AccountItemMenu v-if="selectable" :item="item">
-            <template #activator="{ props }">
-              <v-btn
-                variant="text"
-                icon="mdi-dots-vertical"
-                v-bind="props"
-              ></v-btn>
-            </template>
-          </AccountItemMenu>
-
-          <slot name="item-actions" :item="item"></slot>
-        </v-list-item-action>
+      <template #actions>
+        <slot name="item-actions"></slot>
       </template>
-    </v-list-item>
+    </AccountListItem>
   </v-list>
 </template>
