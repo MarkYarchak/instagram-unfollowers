@@ -91,7 +91,7 @@ function getNotFollowingBack(filesContent: ParsedFilesContent): ConnectionAccoun
   const followers = getFollowers(filesContent, onlyFields);
   const following = getFollowing(filesContent, onlyFields);
 
-  return following.filter((f) => !followers.some(follower => follower.username === f.username));
+  return following.filter((f) => !hasCompareAccount(f, followers));
 }
 
 function getNotFollowBack(filesContent: ParsedFilesContent) {
@@ -99,7 +99,7 @@ function getNotFollowBack(filesContent: ParsedFilesContent) {
   const followers = getFollowers(filesContent, onlyFields);
   const following = getFollowing(filesContent, onlyFields);
 
-  return followers.filter((follower) => !following.some(f => f.username === follower.username));
+  return followers.filter((follower) => !hasCompareAccount(follower, following));
 }
 
 function getRecentlyUnfollowed(filesContent: ParsedFilesContent): ConnectionAccount[] {
@@ -149,4 +149,13 @@ function formatConnectionAccount(listDataItem: ListDataItem, pick?: ConnectionAc
     return objectPick(account, pick);
   }
   return account;
+}
+
+function hasCompareAccount(account: ConnectionAccount, compareAccounts: ConnectionAccount[]) {
+  const compareFields = getAccountCompareFields(account);
+  return compareAccounts.some(a => compareFields.has(a.username) || compareFields.has(a.title));
+}
+
+function getAccountCompareFields(account: ConnectionAccount) {
+  return new Set([account.title, account.username].filter(Boolean));
 }
