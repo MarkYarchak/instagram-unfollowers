@@ -57,6 +57,7 @@ function formatTimestamp(timestamp: number): string {
             variant="flat"
             color="blue-grey-lighten-4"
             class="mr-3"
+            @click.stop=""
           >
             <v-icon :start="$vuetify.display.smAndUp">mdi-instagram</v-icon>
             <span v-if="$vuetify.display.smAndUp">Open</span>
