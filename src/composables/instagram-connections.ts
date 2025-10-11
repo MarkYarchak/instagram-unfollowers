@@ -55,6 +55,15 @@ async function parseFollowersAndFollowing(fileEntries: UnarchivedEntries) {
   return parsedEntries;
 }
 
+function getAvailableFileContent(filesContent: ParsedFilesContent, fileNames: string | string[]) {
+  const fileNamesArray = Array.isArray(fileNames) ? fileNames : [fileNames];
+  for (const name of fileNamesArray) {
+    if (filesContent[name]) {
+      return filesContent[name];
+    }
+  }
+}
+
 function getFollowers(filesContent: ParsedFilesContent, pick?: ConnectionAccountPick): ConnectionAccount[] {
   const fileName = InstagramConnectionFiles.Followers;
   // Escape any regex special characters in the pattern except '*'
@@ -94,8 +103,11 @@ function getNotFollowBack(filesContent: ParsedFilesContent) {
 }
 
 function getRecentlyUnfollowed(filesContent: ParsedFilesContent): ConnectionAccount[] {
-  const fileName = InstagramConnectionFiles.RecentlyUnfollowed;
-  const fileContent = filesContent[fileName];
+  const fileNames = [
+    InstagramConnectionFiles.RecentlyUnfollowedAccounts,
+    InstagramConnectionFiles.RecentlyUnfollowedProfiles,
+  ];
+  const fileContent = getAvailableFileContent(filesContent, fileNames);
   return fileContent.relationships_unfollowed_users.map((i: ListDataItem) => formatConnectionAccount(i));
 }
 
@@ -106,14 +118,20 @@ function getRecentFollowRequests(filesContent: ParsedFilesContent): ConnectionAc
 }
 
 function getRestrictedAccounts(filesContent: ParsedFilesContent): ConnectionAccount[] {
-  const fileName = InstagramConnectionFiles.RestrictedAccounts;
-  const fileContent = filesContent[fileName];
+  const fileNames = [
+    InstagramConnectionFiles.RestrictedAccounts,
+    InstagramConnectionFiles.RestrictedProfiles,
+  ];
+  const fileContent = getAvailableFileContent(filesContent, fileNames);
   return fileContent.relationships_restricted_users.map((i: ListDataItem) => formatConnectionAccount(i));
 }
 
 function getBlockedAccounts(filesContent: ParsedFilesContent): ConnectionAccount[] {
-  const fileName = InstagramConnectionFiles.BlockedAccounts;
-  const fileContent = filesContent[fileName];
+  const fileNames = [
+    InstagramConnectionFiles.BlockedAccounts,
+    InstagramConnectionFiles.BlockedProfiles,
+  ];
+  const fileContent = getAvailableFileContent(filesContent, fileNames);
   return fileContent.relationships_blocked_users.map((i: ListDataItem) => formatConnectionAccount(i));
 }
 
