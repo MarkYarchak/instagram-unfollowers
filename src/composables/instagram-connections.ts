@@ -1,4 +1,5 @@
 import { objectPick } from '@vueuse/core';
+import { hasCompareAccount } from '@/helpers/accounts';
 import { FOLLOWERS_AND_FOLLOWING_PATH, InstagramConnectionFiles } from '@/constants/sources';
 import type { ZipEntry } from 'unzipit';
 import type { UnarchivedEntries } from '@/composables/archive-reader';
@@ -149,13 +150,4 @@ function formatConnectionAccount(listDataItem: ListDataItem, pick?: ConnectionAc
     return objectPick(account, pick);
   }
   return account;
-}
-
-function hasCompareAccount(account: ConnectionAccount, compareAccounts: ConnectionAccount[]) {
-  const compareFields = getAccountCompareFields(account);
-  return compareAccounts.some(a => compareFields.has(a.username) || compareFields.has(a.title));
-}
-
-function getAccountCompareFields(account: ConnectionAccount) {
-  return new Set([account.title, account.username].filter(Boolean));
 }

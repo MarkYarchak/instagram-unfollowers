@@ -2,6 +2,7 @@ import { computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useLabelsStore } from '@/stores/labels';
 import { useInstagramConnections } from '@/composables/instagram-connections';
+import { matchesAccount, matchesAccountLabel } from '@/helpers/accounts';
 import type { Ref, ComputedRef } from 'vue';
 import type { AccountLabel } from '@/db/account-labels-db';
 import type { ConnectionAccount } from '@/composables/instagram-connections';
@@ -36,7 +37,7 @@ function createAPI(filesContent: ParsedFilesContent, labelsListRef: Ref<AccountL
     const uniqAccountConnections = getUniqConnectionAccounts();
 
     return computed(() => labels.value.map((label) => {
-      const account = uniqAccountConnections.find(a => [a.username, a.title].includes(label.username));
+      const account = uniqAccountConnections.find(a => matchesAccountLabel(a, label));
       return { label, account };
     })) as ComputedRef<LabeledAccount[]>;
   }
@@ -47,7 +48,7 @@ function createAPI(filesContent: ParsedFilesContent, labelsListRef: Ref<AccountL
     const connectionAccounts = [...followers];
 
     for (const account of following) {
-      if (followers.some(f => f.username === account.username)) {
+      if (followers.some(f => matchesAccount(f, account))) {
         continue;
       }
       connectionAccounts.push(account);
@@ -56,7 +57,7 @@ function createAPI(filesContent: ParsedFilesContent, labelsListRef: Ref<AccountL
   }
 
   function findAccountLabel(account: ConnectionAccount) {
-    return liveItems.value.find(i => [account.username, account.title].includes(i.label?.username))?.label;
+    return liveItems.value.find(i => matchesAccountLabel(account, i.label))?.label;
   }
 
   function hasLabel(account: ConnectionAccount) {
