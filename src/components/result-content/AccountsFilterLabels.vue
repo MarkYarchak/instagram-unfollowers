@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed, inject } from 'vue';
 import { useLabelsStore } from '@/stores/labels';
+import { matchesAccountLabel } from '@/helpers/accounts';
 import type { ConnectionAccount } from '@/composables/instagram-connections';
 import type { AccountLabel } from '@/db/account-labels-db';
 
@@ -19,7 +20,7 @@ const removedCount = computed(() => findAccountsInLabels(labelsStore.removedByAr
 const anyFiltersApplied = computed(() => props.search || whitelistedCount.value || removedCount.value);
 
 function findAccountsInLabels(labels: AccountLabel[]) {
-  return props.items.filter(a => labels.some(l => l.username === a.username));
+  return props.items.filter(a => labels.some(l => matchesAccountLabel(a, l)));
 }
 </script>
 
