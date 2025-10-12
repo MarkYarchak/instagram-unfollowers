@@ -18,3 +18,7 @@ export function matchesAccount(account: ConnectionAccount, compareAccount: Conne
 export function matchesAccountLabel(account: ConnectionAccount, label: AccountLabel | undefined) {
   return [account.username, account.title].includes(label?.username);
 }
+
+export function getAccountUsername(account: ConnectionAccount) {
+  return account.username || account.title;
+}

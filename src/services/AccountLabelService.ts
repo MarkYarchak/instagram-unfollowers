@@ -1,4 +1,5 @@
 import { db } from '@/db/account-labels-db';
+import { getAccountUsername } from '@/helpers/accounts';
 import type { AccountLabelsKey } from '@/constants/indexeddb';
 import type { AccountLabel } from '@/db/account-labels-db';
 import type { ConnectionAccount } from '@/composables/instagram-connections';
@@ -33,7 +34,7 @@ export class AccountLabelService {
   }
 
   async addItem(account: ConnectionAccount, archiveId: number) {
-    const username = account.username || account.title;
+    const username = getAccountUsername(account);
 
     if (!username) {
       throw new Error(this.errorMessages.NoUsername);
@@ -54,7 +55,7 @@ export class AccountLabelService {
   }
 
   async addItems(accounts: ConnectionAccount[], archiveId: number) {
-    const usernames = accounts.map(a => a.username || a.title);
+    const usernames = accounts.map(a => getAccountUsername(a));
     if (usernames.some(u => !u)) {
       throw new Error(this.errorMessages.NoUsername);
     }
@@ -69,9 +70,9 @@ export class AccountLabelService {
     }
 
     const createDate = new Date();
-    const items = accounts.map(({ username, title }) => ({
+    const items = accounts.map((a) => ({
       archiveId,
-      username: (username || title)!,
+      username: getAccountUsername(a)!,
       createDate,
     }));
     return this.labelsDB.bulkAdd(items);

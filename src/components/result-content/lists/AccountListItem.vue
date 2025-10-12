@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import AccountItemMenu from '@/components/result-content/lists/AccountItemMenu.vue';
+import { getAccountUsername } from '@/helpers/accounts';
 import type { ConnectionAccount } from '@/composables/instagram-connections';
 
 interface Props {
@@ -10,7 +11,7 @@ interface Props {
 
 const props = defineProps<Props>();
 
-const accountValue = computed(() => props.account.username || props.account.title);
+const accountValue = computed(() => getAccountUsername(props.account));
 const formattedTimestamp = computed(() => formatTimestamp(props.account.timestamp));
 
 function formatTimestamp(timestamp: number): string {

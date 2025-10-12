@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, watch } from 'vue';
 import { useLazyList } from '@/composables/lazy-list';
+import { getAccountUsername } from '@/helpers/accounts';
 import AccountsList from '@/components/result-content/lists/AccountsList.vue';
 import AccountsFilterLabels from '@/components/result-content/AccountsFilterLabels.vue';
 import type { ConnectionAccount } from '@/composables/instagram-connections';
@@ -42,7 +43,7 @@ function matchItems() {
   if (!props.search && !props.filter) {
     return filteredItems.value;
   }
-  const getSearchField = (a: ConnectionAccount) => a.username || a.title || '';
+  const getSearchField = (a: ConnectionAccount) => getAccountUsername(a) || '';
   return filteredItems.value
     .filter((account) => props.search ? getSearchField(account).toLowerCase().includes(props.search.toLowerCase()) : true);
 }

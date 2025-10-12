@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { getAccountUsername } from '@/helpers/accounts';
 import AccountListItem from '@/components/result-content/lists/AccountListItem.vue';
 import type { ConnectionAccount } from '@/composables/instagram-connections';
 
@@ -11,10 +12,6 @@ interface Props {
 defineProps<Props>();
 
 const selectedItems = defineModel<ConnectionAccount[]>('selectedItems');
-
-function getItemValue(item: ConnectionAccount) {
-  return item.username || item.title;
-}
 </script>
 
 <template>
@@ -29,7 +26,7 @@ function getItemValue(item: ConnectionAccount) {
 
     <AccountListItem
       v-for="item of items"
-      :key="getItemValue(item)"
+      :key="getAccountUsername(item)"
       :account="item"
       :selectable="selectable"
     >
