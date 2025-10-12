@@ -33,11 +33,13 @@ export class AccountLabelService {
   }
 
   async addItem(account: ConnectionAccount, archiveId: number) {
-    if (!account.username) {
+    const username = account.username || account.title;
+
+    if (!username) {
       throw new Error(this.errorMessages.NoUsername);
     }
     const sameUsernameLabels = await this.labelsDB
-      .where({ username: account.username })
+      .where({ username })
       .and(label => label.archiveId === archiveId)
       .toArray();
     if (sameUsernameLabels.length) {
@@ -46,13 +48,13 @@ export class AccountLabelService {
 
     return this.labelsDB.add({
       archiveId,
-      username: account.username,
+      username,
       createDate: new Date(),
     });
   }
 
   async addItems(accounts: ConnectionAccount[], archiveId: number) {
-    const usernames = accounts.map(a => a.username);
+    const usernames = accounts.map(a => a.username || a.title);
     if (usernames.some(u => !u)) {
       throw new Error(this.errorMessages.NoUsername);
     }
@@ -67,9 +69,9 @@ export class AccountLabelService {
     }
 
     const createDate = new Date();
-    const items = accounts.map(({ username }) => ({
+    const items = accounts.map(({ username, title }) => ({
       archiveId,
-      username: username!,
+      username: (username || title)!,
       createDate,
     }));
     return this.labelsDB.bulkAdd(items);

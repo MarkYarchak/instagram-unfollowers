@@ -1,19 +1,18 @@
 <script lang="ts" setup>
 import { computed, inject, ref } from 'vue';
-import { useLabelsStore } from '@/stores/labels';
+import { useWhitelistedLabeledAccounts, useRemovedLabeledAccounts } from '@/composables/account-labels/labeled-accounts';
 import { useInstagramConnections } from '@/composables/instagram-connections';
 import { FOLLOWERS_AND_FOLLOWING_PATH } from '@/constants/sources';
 import ConnectionAccountsList from '@/components/result-content/lists/ConnectionAccountsList.vue';
 import type { ConnectionAccount } from '@/composables/instagram-connections';
 import type { ParsedFilesContent } from '@/composables/instagram-connections';
-import type { AccountLabel } from '@/db/account-labels-db';
 
 interface Props {
   filesContent: ParsedFilesContent;
   search?: string;
 }
 
-defineProps<Props>();
+const props = defineProps<Props>();
 
 const archiveId = inject<number>('archiveId', -1);
 
@@ -23,7 +22,8 @@ const activeTab = ref<string|number>();
 const breadcrumbs = computed(() => FOLLOWERS_AND_FOLLOWING_PATH.split('/'));
 const instagramConnections = useInstagramConnections();
 
-const labelsStore = useLabelsStore();
+const whitelistedLabeledAccounts = useWhitelistedLabeledAccounts(props.filesContent);
+const removedLabeledAccounts = useRemovedLabeledAccounts(props.filesContent, archiveId);
 
 const tabs = [
   {
@@ -81,9 +81,8 @@ const tabs = [
 ];
 
 function filterWhitelistedAndRemoved(account: ConnectionAccount) {
-  const isLabeledUsername = (label: AccountLabel) => label.username === account.username;
-  const isWhitelisted = labelsStore.whitelist.some(isLabeledUsername);
-  const isRemoved = labelsStore.removedByArchive(archiveId).some(isLabeledUsername);
+  const isWhitelisted = whitelistedLabeledAccounts.hasLabel(account);
+  const isRemoved = removedLabeledAccounts.hasLabel(account);
 
   return !isWhitelisted && !isRemoved;
 }

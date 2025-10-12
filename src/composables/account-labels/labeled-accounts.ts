@@ -36,7 +36,7 @@ function createAPI(filesContent: ParsedFilesContent, labelsListRef: Ref<AccountL
     const uniqAccountConnections = getUniqConnectionAccounts();
 
     return computed(() => labels.value.map((label) => {
-      const account = uniqAccountConnections.find(a => a.username === label.username);
+      const account = uniqAccountConnections.find(a => [a.username, a.title].includes(label.username));
       return { label, account };
     })) as ComputedRef<LabeledAccount[]>;
   }
@@ -56,12 +56,17 @@ function createAPI(filesContent: ParsedFilesContent, labelsListRef: Ref<AccountL
   }
 
   function findAccountLabel(account: ConnectionAccount) {
-    return liveItems.value.find(i => i.account?.username === account.username)?.label;
+    return liveItems.value.find(i => [account.username, account.title].includes(i.label?.username))?.label;
+  }
+
+  function hasLabel(account: ConnectionAccount) {
+    return !!findAccountLabel(account);
   }
 
   return {
     liveItems,
     accounts,
     findAccountLabel,
+    hasLabel,
   };
 }
